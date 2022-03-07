@@ -1,10 +1,9 @@
-from distutils.debug import DEBUG
 import os
-from pickle import TRUE
+
 
 class Config:
 
-    pass
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://moringa:user@localhost/pitches'
 
 
 class ProdConfig(Config):
