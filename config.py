@@ -4,6 +4,7 @@ import os
 class Config:
 
     SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://moringa:user@localhost/pitches'
+    SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 class ProdConfig(Config):
