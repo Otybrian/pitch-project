@@ -26,6 +26,8 @@ class User(UserMixin, db.Model):
     pass_secure = db.Column(db.String(255))
     password_hash = db.Column(db.String(255))
     posts = db.relationship('Post', backref='user', lazy="dynamic")
+    liked = db.relationship('PostLike',foreign_keys='PostLike.user_id', backref='user', lazy='dynamic')
+    reactions = db.relationship('Reaction', backref='author', lazy=True)
 
     @property
     def password(self):
@@ -36,13 +38,17 @@ class User(UserMixin, db.Model):
 
     def verify_password(self, password):
         return check_password_hash(self.pass_secure, password)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
         
 
     def __repr__(self):
         return f'User {self.username}'
 
 
-class Role(db.Model):
+class Role(db.Model,UserMixin):
     __tablename__ = 'roles'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -53,7 +59,7 @@ class Role(db.Model):
         return f'User {self.name}'
 
 
-class Post(db.Model):
+class Post(db.Model,UserMixin):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(100))
@@ -74,10 +80,10 @@ class Post(db.Model):
     def __repr__(self):
         return f"Post ('{self.title}', '{self.post}', '{self.posted_date}')"
 
-class Reaction(db.Model):
+class Reaction(db.Model,UserMixin):
     __tablename__ = 'reactions'
     id = db.Column(db.Integer, primary_key = True)
-    comment = db.Column(db.Text)
+    reaction = db.Column(db.Text)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     posted_date = db.Column(db.DateTime, default=datetime.utcnow)
@@ -95,5 +101,13 @@ class Reaction(db.Model):
 
 
     def __repr__(self):
-        return f"Reaction('{self.comment}', '{self.posted_date}')"
+        return f"Reaction('{self.reaction}', '{self.posted_date}')"
+
+
+class PostLike(db.Model,UserMixin):
+    __tablename__ = 'post_like'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    comment_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 
