@@ -1,6 +1,6 @@
 # from multiprocessing import managers
 from app import create_app, db
-from app.models import User, Role
+from app.models import User, Role, Post, Reaction
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager, Server
 
@@ -17,7 +17,7 @@ manager.add_command('db', MigrateCommand)
 
 @manager.shell
 def make_shell_context():
-    return dict(app = app, db = db, User = User, Role = Role)
+    return dict(app = app, db = db, User = User, Role = Role, Post = Post, Reaction = Reaction)
 
 
 if __name__ == '__main__':
