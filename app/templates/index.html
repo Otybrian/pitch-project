@@ -1,3 +1,4 @@
+{% extends 'base.html'%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +8,7 @@
     <title>Document</title>
 </head>
 <body>
+    {% block content %}
     <h2>PITCH CATEGORIES</h2>
     <h3>Self Pitches</h3>
     <h3>Interview Pitches</h3>
@@ -14,5 +16,6 @@
     <h3>Promotion Pitches</h3>
     <h3>Job Experience Pitches</h3>
     <h3>Education Background Pitches</h3>
+    {% endblock%}
 </body>
 </html>
