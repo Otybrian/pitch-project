@@ -1,16 +1,35 @@
+from turtle import title
+from unicodedata import category
 from . import main
 from flask import render_template,request,redirect,url_for,abort
-from flask_login import login_required
-from ..models import User
-from .forms import UpdateProfile
+from flask_login import current_user, login_required
+from ..models import User, Post, Reaction, PostLike
+from .forms import UpdateProfile, PostForm, CommentForm
 from .. import db,photos
 
 @main.route("/")
 def index():
 
     
+    home = request.args.get('page', 1, type=int)
+    pitches = Post.query.order_by(Post.posted_date.desc()).all()
+    return render_template('index.html', home = home, pitches = pitches)
 
-    return render_template('index.html')
+@main.route("/post/new", methods=['GET', 'POST'])
+def new_pitch():
+    pitch_form = PostForm()
+    if pitch_form.validate_on_submit():
+        pitch = Post(title = pitch_form.title.data, category = pitch_form.category.data,
+               post = pitch_form.post.data, by = current_user)
+
+        db.session.add(pitch)
+        db.session.commit('You have successfully posted your pitch', 'success')
+        return redirect(url_for('index'))
+    else:
+        pitch = Post.query.order_by(Post.posted_date ).all()
+    return render_template('new_pitch.html', title='New Pitch', pitch_form=pitch_form, legend='New Pitch',pitch=pitch)
+        
+
 
 
 @main.route('/user/<uname>')

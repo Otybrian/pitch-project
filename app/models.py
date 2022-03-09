@@ -25,9 +25,25 @@ class User(UserMixin, db.Model):
     bio = db.Column(db.String(255))
     pass_secure = db.Column(db.String(255))
     password_hash = db.Column(db.String(255))
-    posts = db.relationship('Post', backref='user', lazy="dynamic")
+    post = db.relationship('Post', backref='user', lazy="dynamic")
     liked = db.relationship('PostLike',foreign_keys='PostLike.user_id', backref='user', lazy='dynamic')
-    reactions = db.relationship('Reaction', backref='author', lazy=True)
+    reactions = db.relationship ('Reaction', foreign_keys='Reaction.user_id', backref = 'user', lazy=True)
+
+
+    def like_post(self, post):
+        if not self.has_liked_post(post):
+            like = PostLike(post_id = post.id, user_id = self.id)
+            db.session.add(like)
+
+    def has_liked_post(self, post):
+        return PostLike.query.filter(
+            PostLike.user_id == self.id,
+            PostLike.post_id == post.id).count() > 0
+
+    def unlike_post(self, post):
+        if self.has_liked_post(post):
+            unlike = PostLike.query.filter_by(post_id=post.id, user_id=self.id)
+            db.session.delete(unlike)
 
     @property
     def password(self):
@@ -62,8 +78,9 @@ class Role(db.Model,UserMixin):
 class Post(db.Model,UserMixin):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key = True)
+    category = db.Column(db.Text, nullable=False)
     title = db.Column(db.String(100))
-    post = db.Column(db.Text)
+    post = db.Column(db.Text, nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     posted_date = db.Column(db.DateTime, default=datetime.utcnow)
 
