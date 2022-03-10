@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content%} 
+    <h2 class="mb-4 mt-2 pt-2"> {{category}} </h2>
+    {% for post in item %}
+    <p>{{post.title}}</p>
+    <p>{{post.content}}</p>
+    <article class="media content-section">
+      <img class="rounded-circle article-img" src="https://source.unsplash.com/125x125/?profile,photo" alt="profile photo">
+            <div class="media-body">
+              <div class="article-metadata">
+                <a class="mr-2" href="{{ url_for('.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                <small class="text-muted mr-2">{{ post.posted_date.strftime('%Y-%m-%d') }}</small>
+                <small class="mr-2">Posted in: <a class="mr-2" href="{{ url_for('.category_post', category=post.category) }}">{{ post.category }}</a></small>
+
+              </div>
+              <h2><a class="article-title mt-2" href="{{ url_for('.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+              <p class="article-content">{{ post.content }}</p>
+              <p>{{post}}</p>
+            </div>
+            <p class="article-footer"><a class="ratings" href="{{ url_for('.new_comment', post_id=post.id) }}"> Leave a comment</a></p>
+    </article>
+    {% endfor %}
+    
+
+{% endblock content %}

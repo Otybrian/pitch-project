@@ -1,24 +1,21 @@
-{% extends 'bootstrap/base.html'%}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    {% if title %}
+    <title>{{title}}</title>
+    {% else %}
+    <title>Home: Post and Read Nice Pitches</title>
+    {%  endif %}
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
 </head>
-
 <body>
-
-    <!-- Navbar block  -->
-    {% block navbar %}
-    {% include 'navbar.html' %}
-    {% endblock %}
-    <!-- Body Content -->
-    {% block content %}
-
-    {% endblock %}
+{% extends 'bootstrap/base.html'%}
+{% block navbar %}
+{% include 'navbar.html' %}
+{% endblock %}
+{% block content %}
+{% include 'index.html' %}
+{% endblock %}
 </body>
-
 </html>
