@@ -1,21 +1,106 @@
 {% extends 'base.html'%}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    {% block content %}
-    <h2>PITCH CATEGORIES</h2>
-    <h3>Self Pitches</h3>
-    <h3>Interview Pitches</h3>
-    <h3>Product Pitches</h3>
-    <h3>Promotion Pitches</h3>
-    <h3>Job Experience Pitches</h3>
-    <h3>Education Background Pitches</h3>
-    {% endblock%}
-</body>
-</html>
+{% block styles%}
+    {{ super() }}
+{% endblock %}
+{% block navbar%}
+{{super()}}
+{% endblock %}
+{% block content %}
+<div class="body">
+<div class="container-fluid">
+  <h2 class=" font-bold">Pitches</h2>
+  <div class="row">
+    <div class="col-md-6">
+      <hr>
+      <article class="media content-section" style="border-bottom: solid black ;">
+        {% if user.profile_pic_path %}
+        <img src="{{url_for('static',filename=user.profile_pic_path)}}" alt="" class="img-fluid img-thumbnail">
+        {%else%}
+        <img src="{{url_for('static',filename='logo-removebg-preview.png')}}" alt="..." class="img-thumbnail">
+        
+        {% if current_user.is_authenticated %}
+        <p>No profile picture to display</p>
+        <a href="{{url_for('main.profile',uname=current_user.username)}}">Add a profile photo</a>
+        {%else%}
+        <p><a href="{{url_for('auth.login')}}">Add a profile photo</a></p>
+        {%endif%}
+        {% endif %}
+      </article>
+      <article class="media content-section">
+        {% for post in item %}
+        <img class="rounded-circle article-img" src="" alt="">
+        <div class="media-body">
+          <div class="article-metadata">
+            <button><a href="{{ url_for('.new_post', post_id=post.id) }}">Add a New Pitch</a></button>
+              <h2>Pitch Category: <a class="mr-2" href="{{ url_for('.category_post', category=post.category) }}">{{
+                post.category }}</a></h2>
+          </div>
+          <h4><a class="article-title">Title: {{ post.title }}</a></h4>
+          <p class="article-content">{{ post.content | truncate(100) }}</p>
+          <p>Posted by: <a class="mr-2" href="{{ url_for('.user_posts', username=post.author.username) }}">{{ post.author.username
+          }}</a></p>
+          <p>On:<small class="text-muted mr-2">{{ post.posted_date.strftime('%Y-%m-%d') }}</small></p>
+        </div>
+        <p class="article-footer"><a class="ratings" href="{{ url_for('.new_comment', post_id=post.id) }}">
+            Comment on this pitch</a></p>
+        <br>
+      </article>
+      <button type="submit" class="btn btn-success">
+        <a href="{{ url_for('.like_action', post_id=post.id, action='like') }}">Like</a>
+      </button>
+      <button type="submit" class="btn btn-danger">
+        <a href="{{ url_for('.like_action', post_id=post.id, action='unlike') }}">Unlike</a>
+      </button>
+      <button class="btn btn-info">
+        <span>{{ post.likes.count() }} likes</span>
+      </button>
+      <hr>
+      {% endfor %}
+      <div class="col-md-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages%}
+        {% for category, message in messages %}
+        <div class="alert alert-{{category}}">
+          {{message}}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-control-label">
+        <div class="content-section">
+          <h3>Categories</h3>
+          <p class='text-muted'>Select a Category to Post or Read Through Pitches</p>
+          <div class="list-group" style="background-color: grey;">
+            <button type="button" class="list-group-item list-group-item-action active"><a
+                style="text-decoration: none; color: white;" href="/">Interview and Job Experience
+                Pitches</a></button>
+            <button type="button" class="list-group-item list-group-item-action"><a
+                style="text-decoration: none; color: black;" href="/">Product and Advertisement
+                Pitches</a></button>
+            <button type="button" class="list-group-item list-group-item-action"><a
+                style="text-decoration: none; color: black;" href="/">Personal Life
+                Pitches</a></button>
+            <button type="button" class="list-group-item list-group-item-action"><a
+                style="text-decoration: none; color: black;" href="/">Educational Background
+                Pitches</a></button>
+            <button type="button" class="list-group-item list-group-item-action"><a
+                style="text-decoration: none; color: black;" href="/">Personal Life Experience
+                and Motivational Pitches</a></button>
+            <button type="button" class="list-group-item list-group-item-action"><a
+                style="text-decoration: none; color: black;" href="/">Personal Life Experience and
+                Motivational Pitches</a></button>
+            <button type="button" class="list-group-item list-group-item-action"><a
+                style="text-decoration: none; color: black;" href="/">Family Life
+                Pitches</a></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock %}
