@@ -1,20 +1,21 @@
 from flask_wtf import FlaskForm
-from wtforms import TextAreaField, SubmitField, StringField, SelectField
+from wtforms import StringField,SubmitField,TextAreaField,SelectField
 from wtforms.validators import DataRequired
-
-class UpdateProfile(FlaskForm):
     
-    bio = TextAreaField('Say more about you so we know you better',validators = [DataRequired()])
+class UpdateProfile(FlaskForm):
+    bio = TextAreaField('Tell us about you.',validators = [DataRequired()])
     submit = SubmitField('Submit')
-
+    
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    category = SelectField('Categories', choices=[('Self', 'Self Pitches'), ('Interview', 'Interview Pitches'),
-               ('Product', 'Product Pitches'), ('Promotion', 'Promition Pitches'), ('Job Experience', 'Job Experience Pitches'), 
-               ('Education', 'Education Background Pitches')], validators=[DataRequired()])
-    post = TextAreaField('Content', validators=[DataRequired()])
+    content = TextAreaField('Content', validators=[DataRequired()])
+    category = SelectField('Categories', choices=[('Interview Pitch', 'Interview Pitch'), 
+    ('Product Pitch', 'Product Pitch'), ('Personal Pitch', 'Personal Pitch'), 
+    ('Education Pitch', 'Education Pitch'), ('Experience Pitch', 'Experience Pitch'),
+    ('Family Pitch', 'Family Pitch')], validators=[DataRequired()])
     submit = SubmitField('Post')
-
+    
+    
 class CommentForm(FlaskForm):
     comment = TextAreaField('Comment')
     submit = SubmitField('Submit')
